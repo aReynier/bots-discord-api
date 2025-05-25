@@ -7,14 +7,17 @@ export class CreateIdentificationRequestDto extends PickType(PickableInternUUIDF
 ]) {
 
   @IsString()
+  @IsNotEmpty()
   @Length(2, 50)
   firstname: string;
 
   @IsString()
+  @IsNotEmpty()
   @Length(2, 50)
   lastname: string;
 
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
   uuidMember: string; 
