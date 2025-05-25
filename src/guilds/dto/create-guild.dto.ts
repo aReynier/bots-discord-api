@@ -16,6 +16,7 @@ export class CreateGuildDto {
   })
   @IsString()
   @MaxLength(50)
+  @Matches(/^[A-Za-zÀ-ÿ0-9 \-]+$/)
   name: string;
 
   @ApiProperty({
