@@ -33,7 +33,8 @@ export class CreateMemberInformationsDto extends PickType(
     example: 'jean.dupont@example.com',
   })
   @IsEmail()
-  @MaxLength(100)
+  @MaxLength(255)
+  @Matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
   email: string;
 
   uuidMember: string;
