@@ -1,6 +1,7 @@
 import {
   IsString,
-  IsUUID,
+  IsNotEmpty,
+  MinLength,
   MaxLength,
   IsBoolean,
   Matches,

@@ -1,4 +1,4 @@
-import { IsString, IsInt, MaxLength, Min, Length } from 'class-validator';
+import { IsString, IsInt, MinLength, MaxLength, Min, Length, IsNotEmpty, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCategoryDto {
@@ -15,7 +15,9 @@ export class CreateCategoryDto {
     example: '123456789012345678',
   })
   @IsString()
+  @IsNotEmpty()
   @Length(17, 19)
+  @Matches(/^\d+$/)
   uuidGuild: string;
 
   @ApiProperty({

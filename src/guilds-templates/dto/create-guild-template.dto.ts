@@ -1,9 +1,12 @@
 import {
   IsString,
+  MinLength,
   MaxLength,
   Length,
   IsOptional,
   IsJSON,
+  Matches,
+  IsNotEmpty,
 } from 'class-validator';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { PickableDiscordUUIDFields } from 'src/utils/pickable-discord-uuid-fields';
@@ -19,7 +22,9 @@ export class CreateGuildTemplateDto extends PickType(
     example: '123456789012345678',
   })
   @IsString()
+  @IsNotEmpty()
   @Length(17, 19)
+  @Matches(/^\d+$/)
   uuid: string;
 
   @ApiProperty({
@@ -28,7 +33,7 @@ export class CreateGuildTemplateDto extends PickType(
   })
   @IsString()
   @IsNotEmpty()
-  @MinLength(3)
+  @MinLength(2)
   @MaxLength(100)
   @Matches(/^[A-Za-zÀ-ÿ0-9 \-]+$/)
   name: string;

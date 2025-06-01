@@ -1,4 +1,4 @@
-import { IsString, IsEmail, MaxLength } from 'class-validator';
+import { IsString, IsNotEmpty, MinLength, Matches, IsEmail, MaxLength } from 'class-validator';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { PickableInternUUIDFields } from 'src/utils/pickable-intern-uuid-fields';
 

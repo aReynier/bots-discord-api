@@ -2,9 +2,12 @@ import {
   IsString,
   IsInt,
   IsEnum,
+  MinLength,
   MaxLength,
   Min,
   Length,
+  IsNotEmpty,
+  Matches,
 } from 'class-validator';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { PickableDiscordUUIDFields } from 'src/utils/pickable-discord-uuid-fields';
@@ -24,7 +27,9 @@ export class CreateChannelDto extends PickType(PickableDiscordUUIDFields, [
     example: '123456789012345678',
   })
   @IsString()
+  @IsNotEmpty()
   @Length(17, 19)
+  @Matches(/^\d+$/)
   uuid: string;
 
   @ApiProperty({

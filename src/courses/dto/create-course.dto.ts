@@ -2,11 +2,10 @@ import {
   IsString,
   IsNotEmpty,
   IsBoolean,
-  Length,
   Matches,
   IsOptional,
   MinLength,
-  maxLength,
+  MaxLength,
 } from 'class-validator';
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
 import { PickableDiscordUUIDFields } from 'src/utils/pickable-discord-uuid-fields';

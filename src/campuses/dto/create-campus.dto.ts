@@ -1,5 +1,6 @@
 import { IntersectionType, PickType } from '@nestjs/swagger';
 import { PickableDtoFields } from 'src/utils/pickable-dto-fields';
+import { IsString, IsNotEmpty, MinLength, MaxLength, Matches, IsOptional } from 'class-validator';
 import { PickableDiscordUUIDFields } from 'src/utils/pickable-discord-uuid-fields';
 
 export class CreateCampusDto extends PickType(

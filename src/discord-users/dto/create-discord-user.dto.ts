@@ -1,4 +1,4 @@
-import { IsString, Length } from 'class-validator';
+import { IsString, IsNotEmpty, Length, Matches } from 'class-validator';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { PickableDiscordUUIDFields } from 'src/utils/pickable-discord-uuid-fields';
 
