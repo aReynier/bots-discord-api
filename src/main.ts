@@ -7,12 +7,19 @@ import { EmptyResponseInterceptor } from './common/interceptors/empty-response.i
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { join } from 'path';
+import * as fs from 'fs';
+import helmet from 'helmet';
 
 dotenv.config();
 async function bootstrap() {
+  const httpsOptions = {
+    key: fs.readFileSync('./https/RootCA.key'),
+    cert: fs.readFileSync('./https/RootCA.pem'),
+  };
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter(),
+    new FastifyAdapter({ https: httpsOptions }),
   );
 
   app.useGlobalInterceptors(new EmptyResponseInterceptor());
@@ -58,9 +65,8 @@ async function bootstrap() {
   
   SwaggerModule.setup('api', app, document);
 
-  // Nous ne définissons plus de préfixe global pour l'API
-  // app.setGlobalPrefix('api');
-  
+  app.use(helmet());
+
   // Configuration de la version de l'API
   await app.listen(3000, '0.0.0.0');
 }
