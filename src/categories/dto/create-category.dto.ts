@@ -1,30 +1,20 @@
-import { IsString, IsInt, MaxLength, Min, Length } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsInt, Min, Length, Matches } from 'class-validator';
+import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
+import { PickableDtoFields } from 'src/utils/pickable-dto-fields';
+import { PickableDiscordUUIDFields } from 'src/utils/pickable-discord-uuid-fields';
 
-export class CreateCategoryDto {
+export class CreateCategoryDto extends PickType(IntersectionType(PickableDtoFields, PickableDiscordUUIDFields), [
+    'name',
+    'uuidGuild'
+]) { 
     @ApiProperty({
         description: 'ID Discord de la catégorie',
         example: '123456789012345678'
     })
     @IsString()
-    @Length(17, 19)
+    @Length(17, 19, { message: 'Le snowflake doit contenir entre 17 et 19 caractères' })
+    @Matches(/^\d+$/, { message: 'Le snowflake doit contenir uniquement des chiffres' })
     uuid: string;
-
-    @ApiProperty({
-        description: 'ID Discord du serveur',
-        example: '123456789012345678'
-    })
-    @IsString()
-    @Length(17, 19)
-    uuidGuild: string;
-
-    @ApiProperty({
-        description: 'Nom de la catégorie',
-        example: 'Général'
-    })
-    @IsString()
-    @MaxLength(50)
-    name: string;
 
     @ApiProperty({
         description: 'Position de la catégorie dans le serveur',

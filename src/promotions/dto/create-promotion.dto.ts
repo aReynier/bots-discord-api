@@ -1,9 +1,15 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsDate } from 'class-validator';
+import { IsDate, IsEnum, IsString, Length } from 'class-validator';
 import { PickableDtoFields } from 'src/utils/pickable-dto-fields';
 import { PickableDiscordUUIDFields } from 'src/utils/pickable-discord-uuid-fields';
 import { PickableInternUUIDFields } from 'src/utils/pickable-intern-uuid-fields';
+
+enum PromotionStatus {
+  ACTIVE = 'active',
+  COMPLETED =  'completed',
+  CANCELLED =  'cancelled',
+}
 
 export class CreatePromotionDto extends PickType(IntersectionType(PickableDtoFields, PickableDiscordUUIDFields, PickableInternUUIDFields), [
   'name',
@@ -13,6 +19,18 @@ export class CreatePromotionDto extends PickType(IntersectionType(PickableDtoFie
   'uuidCampus',
   'uuidCategory'
 ]) {
+  
+  @ApiProperty({
+    description: 'Statut de la promotion',
+    example: 'active',
+    enum: ['active', 'completed', 'cancelled'],
+    default: 'active'
+  })
+  @IsString()
+  @Length(1,20)
+  @IsEnum(PromotionStatus)
+  status: string;
+  
 
   @ApiProperty({
     description: 'Date de début de la promotion',

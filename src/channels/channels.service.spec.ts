@@ -2,7 +2,9 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ChannelsService } from './channels.service';
 import { Channel } from './entities/channel.entity';
 import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
+import { Course } from 'src/courses/entities/course.entity';
+import { Guild } from 'src/guilds/entities/guild.entity';
+import { Category } from 'src/categories/entities/category.entity';
 
 describe('ChannelsService', () => {
   let service: ChannelsService;
@@ -17,9 +19,9 @@ describe('ChannelsService', () => {
     uuidGuild: '345678901234567890',
     createdAt: new Date(),
     updatedAt: new Date(),
-    category: null,
-    course: null,
-    guild: null
+    category: new Category(),
+    course: new Course(),
+    guild: new Guild()
   };
 
   const mockRepository = {

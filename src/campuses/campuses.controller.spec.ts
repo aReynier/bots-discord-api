@@ -26,6 +26,8 @@ describe('CampusesController', () => {
   it('should create a new campus', async () => {
     const dto: CreateCampusDto = {
       name: 'Test Campus',
+      uuidGuild: '123456789012345678',
+      uuidRole: '234567890123456789'
     };
     const result = { uuid: '123e4567-e89b-12d3-a456-426614174000', ...dto };
     mockCampusService.create.mockResolvedValue(result);

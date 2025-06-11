@@ -1,4 +1,4 @@
-import { IsString, MaxLength, IsObject, Length } from 'class-validator';
+import { IsString, MaxLength, IsObject, Length, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateGuildDto {
@@ -7,7 +7,8 @@ export class CreateGuildDto {
     example: '123456789012345678'
   })
   @IsString()
-  @Length(17, 19)
+  @Length(17, 19, { message: 'Le snowflake doit contenir entre 17 et 19 caractères' })
+  @Matches(/^\d+$/, { message: 'Le snowflake doit contenir uniquement des chiffres' })
   uuid: string;
 
   @ApiProperty({
@@ -15,7 +16,8 @@ export class CreateGuildDto {
     example: 'Simplon Server'
   })
   @IsString()
-  @MaxLength(50)
+  @Length(2, 100, { message: 'Le nom doit contenir entre 2 et 100 caractères' })
+  @Matches(/^[a-zA-ZÀ-ÿ0-9\s\-_]+$/, { message: 'Le nom ne peut contenir que des lettres (avec accents), chiffres, espaces, tirets et underscores' })
   name: string;
 
   @ApiProperty({
@@ -23,7 +25,7 @@ export class CreateGuildDto {
     example: '100'
   })
   @IsString()
-  @MaxLength(50)
+  @Length(1,6, { message: 'Un serveur peut contenir entre "1" et "500000" membres' })
   memberCount: string;
 
   @ApiProperty({

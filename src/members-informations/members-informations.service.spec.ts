@@ -42,6 +42,7 @@ describe('MembersInformationsService', () => {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@example.com',
+      uuidMember: '123456789012345678'
     };
     const entity = { 
       ...dto, 
@@ -129,10 +130,10 @@ describe('MembersInformationsService', () => {
     expect(mockRepository.save).toHaveBeenCalled();
     
     // Vérifier que le résultat contient les bonnes valeurs
-    expect(result.firstName).toBe('Jane');
-    expect(result.lastName).toBe('Doe');
-    expect(result.email).toBe('john.doe@example.com');
-    expect(result.updatedAt).toBeInstanceOf(Date);
+    expect(result?.firstName).toBe('Jane');
+    expect(result?.lastName).toBe('Doe');
+    expect(result?.email).toBe('john.doe@example.com');
+    expect(result?.updatedAt).toBeInstanceOf(Date);
   });
 
   it('should delete a member information', async () => {

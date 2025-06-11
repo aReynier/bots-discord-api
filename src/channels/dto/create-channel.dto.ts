@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsEnum, MaxLength, Min, Length } from 'class-validator';
+import { IsString, IsInt, IsEnum, MaxLength, Min, Length, Matches } from 'class-validator';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { PickableDiscordUUIDFields } from 'src/utils/pickable-discord-uuid-fields';
 
@@ -18,6 +18,7 @@ export class CreateChannelDto extends PickType(PickableDiscordUUIDFields, [
   })
   @IsString()
   @Length(17, 19)
+  @Matches(/^\d+$/, { message: 'Le snowflake doit contenir uniquement des chiffres' })
   uuid: string;
 
   @ApiProperty({
@@ -26,7 +27,11 @@ export class CreateChannelDto extends PickType(PickableDiscordUUIDFields, [
     maxLength: 100
   })
   @IsString()
-  @MaxLength(100)
+  @Length(2, 100, { message: 'Le nom doit contenir entre 2 et 100 caractères' })
+  @Matches(
+    /^[a-zA-ZÀ-ÿ0-9\s\-_]+$/, 
+    { message: 'Le nom ne peut contenir que des lettres (avec accents), chiffres, espaces, tirets et underscores' }
+  )
   name: string;
 
   @ApiProperty({

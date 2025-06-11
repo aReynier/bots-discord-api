@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { GuildsTemplatesService } from './guilds-templates.service';
 import { GuildTemplate } from './entities/guild-template.entity';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { CreateGuildTemplateDto } from './dto/create-guild-template.dto';
 
 describe('GuildsTemplatesService', () => {
   let service: GuildsTemplatesService;
@@ -42,6 +43,8 @@ describe('GuildsTemplatesService', () => {
       const createDto = {
         uuid: '123456789012345678',
         name: 'Test Template',
+        uuidGuild: '123456789012345678',
+        uuidCategory: '234567890123456789',
         description: 'Test Description',
         configuration: {
           welcomeChannel: '123456789',
@@ -140,9 +143,9 @@ describe('GuildsTemplatesService', () => {
       expect(mockRepository.save).toHaveBeenCalled();
       
       // Vérifier que le résultat contient les bonnes valeurs
-      expect(result.name).toBe('Updated Template');
-      expect(result.description).toBe('Test Description');
-      expect(result.updatedAt).toBeInstanceOf(Date);
+      expect(result?.name).toBe('Updated Template');
+      expect(result?.description).toBe('Test Description');
+      expect(result?.updatedAt).toBeInstanceOf(Date);
     });
     
     it('should return null if template not found', async () => {

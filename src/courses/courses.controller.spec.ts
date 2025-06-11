@@ -10,7 +10,7 @@ describe('CoursesController', () => {
   let service: CoursesService;
 
   const mockCourse = {
-    uuid: '123e4567-e89b-12d3-a456-426614174000',
+    uuid: '123456789012345678',
     name: 'Développeur web',
     isCertified: true,
     uuidCategory: '123456789012345678',
@@ -53,7 +53,7 @@ describe('CoursesController', () => {
       };
 
       mockService.create.mockResolvedValue({
-        uuid: '123e4567-e89b-12d3-a456-426614174000',
+        uuid: '123456789012345678',
         ...dto,
         createdAt: expect.any(Date),
         updatedAt: null
@@ -82,7 +82,7 @@ describe('CoursesController', () => {
 
   describe('getByUUID', () => {
     it('should return a course', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
+      const uuid = '123456789012345678';
       mockService.getByUUID.mockResolvedValue(mockCourse);
 
       const result = await controller.getByUUID(uuid);
@@ -94,7 +94,7 @@ describe('CoursesController', () => {
 
   describe('updateByUUID', () => {
     it('should update a course', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
+      const uuid = '123456789012345678';
       const updateDto: UpdateCourseDto = {
         name: 'updated-course'
       };
@@ -110,7 +110,7 @@ describe('CoursesController', () => {
 
   describe('deleteByUUID', () => {
     it('should delete a course', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
+      const uuid = '123456789012345678';
       mockService.deleteByUUID.mockResolvedValue(undefined);
 
       await controller.deleteByUUID(uuid);

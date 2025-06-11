@@ -9,7 +9,12 @@ export class CreateCourseDto extends PickType(IntersectionType(PickableDiscordUU
     'uuidRole',
     'uuidCategory'
 ]) {
-    @MinLength(3)
+    @IsString()
+    @Length(2, 50, { message: 'Le nom doit contenir entre 2 et 50 caractères' })
+    @Matches(
+        /^[a-zA-ZÀ-ÿ0-9\s\-_]+$/, 
+        { message: 'Le nom ne peut contenir que des lettres (avec accents), chiffres, espaces, tirets et underscores' }
+    )
     name: string;
 
     @ApiProperty({

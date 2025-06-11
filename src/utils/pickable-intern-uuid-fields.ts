@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID } from 'class-validator';
+import { IsString, IsUUID, Length, Matches } from 'class-validator';
 
 export class PickableInternUUIDFields {
 
@@ -46,17 +46,25 @@ export class PickableInternUUIDFields {
   uuidCampus: string;
 
   @ApiProperty({
-    description: 'Identifiant unique de la formation',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    description: 'Identifiant unique du tag (Snowflake) de la formation',
+    minLength: 17,
+    maxLength: 19,
+    example: '726798891974243359',
   })
-  @IsUUID()
+  @IsString()
+  @Matches(/^\d+$/)
+  @Length(17, 19)
   uuidCourse: string;
 
   @ApiProperty({
-    description: 'Identifiant unique de la promotion',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    description: 'Identifiant unique du tag (Snowflake) de la promotion',
+    minLength: 17,
+    maxLength: 19,
+    example: '726798891974243359',
   })
-  @IsUUID()
+  @IsString()
+  @Matches(/^\d+$/)
+  @Length(17, 19)
   uuidPromotion: string;
 
   @ApiProperty({

@@ -5,6 +5,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Role } from './entities/role.entity';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
+import { Guild } from 'src/guilds/entities/guild.entity';
+import { Campus } from 'src/campuses/entities/campus.entity';
+import { Promotion } from 'src/promotions/entities/promotion.entity';
 
 describe('RolesService', () => {
   let service: RolesService;
@@ -20,7 +23,11 @@ describe('RolesService', () => {
     createdAt: new Date(),
     updatedAt: new Date(),
     uuidGuild: '123e4567-e89b-12d3-a456-426614174001',
-    guild: null
+    guild: new Guild(),
+    members: [],
+    courses: [],
+    campus: new Campus(),
+    promotion: new Promotion()
   };
 
   const mockRepository = {
@@ -54,7 +61,8 @@ describe('RolesService', () => {
         rolePosition: '1',
         hoist: true,
         color: '#FF0000',
-        uuidGuild: '123e4567-e89b-12d3-a456-426614174001'
+        uuidGuild: '123456789012345678',
+        uuidRole: '123456789012344623'
       };
 
       const roleDataWithParsedNumbers = {

@@ -1,4 +1,4 @@
-import { IsString, Length } from 'class-validator';
+import { IsString, Length, Matches } from 'class-validator';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { PickableDiscordUUIDFields } from 'src/utils/pickable-discord-uuid-fields';
 
@@ -6,11 +6,21 @@ export class CreateDiscordUserDto extends PickType(PickableDiscordUUIDFields, [
   'uuidDiscord'
 ]) {
   @ApiProperty({
+    description: 'UUID Discord',
+    example: '123456789012345678'
+  })
+  @IsString()
+  @Length(17, 19, { message: 'Le snowflake doit contenir entre 17 et 19 caractères' })
+  @Matches(/^\d+$/, { message: 'Le snowflake doit contenir uniquement des chiffres' })
+  uuidDiscord: string;
+
+  @ApiProperty({
     description: 'Nom d\'utilisateur Discord',
     example: 'JohnDoe#1234'
   })
   @IsString()
-  @Length(2, 50)
+  @Length(2, 32, { message: 'Le nom d\'utilisateur doit contenir entre 2 et 32 caractères' })
+  @Matches(/^[a-zA-ZÀ-ÿ0-9\s\-_]+$/, { message: 'Le nom d\'utilisateur ne peut contenir que des lettres (avec accents), chiffres, espaces, tirets et underscores' })
   discordUsername: string;
 
   @ApiProperty({
@@ -18,6 +28,7 @@ export class CreateDiscordUserDto extends PickType(PickableDiscordUUIDFields, [
     example: '1234'
   })
   @IsString()
-  @Length(1, 50)
+  @Length(4, 4, { message: 'Le discriminateur doit contenir 4 caractères' })
+  @Matches(/^\d+$/, { message: 'Le discriminateur doit contenir uniquement des chiffres' })
   discriminator: string;
 } 

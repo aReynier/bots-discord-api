@@ -30,7 +30,7 @@ describe('CreateCourseDto', () => {
 
     it('should fail validation for short name', async () => {
         const dto = new CreateCourseDto();
-        dto.name = 'cd';
+        dto.name = 'd';
         dto.isCertified = true;
         dto.uuidGuild = '123456789012345678';
         dto.uuidCategory = '123456789012345678';

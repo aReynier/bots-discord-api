@@ -39,6 +39,8 @@ describe('GuildsTemplatesController', () => {
       const createDto = {
         uuid: '123456789012345678',
         name: 'Test Template',
+        uuidGuild: '123456789012345678',
+        uuidCategory: '234567890123456789',
         description: 'Test Description',
         configuration: {
           welcomeChannel: '123456789',

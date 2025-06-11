@@ -1,4 +1,4 @@
-import { IsString, MaxLength, IsInt, Min, Matches, IsIn } from 'class-validator';
+import { IsString, MaxLength, IsInt, Min, Matches, IsIn, Length } from 'class-validator';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { PickableDiscordUUIDFields } from 'src/utils/pickable-discord-uuid-fields';
 
@@ -9,10 +9,11 @@ export class CreateMemberDto extends PickType(PickableDiscordUUIDFields, [
   @ApiProperty({
     description: 'Nom d\'utilisateur du membre dans la guilde',
     example: 'JohnDoe',
-    maxLength: 50
+    maxLength: 32
   })
   @IsString()
-  @MaxLength(50)
+  @Length(1, 32)
+  @Matches(/^[a-zA-ZÀ-ÿ0-9\s\-_]+$/, { message: 'Le nom d\'utilisateur ne peut contenir que des lettres (avec accents), chiffres, espaces, tirets et underscores' })
   guildUsername: string;
 
   @ApiProperty({

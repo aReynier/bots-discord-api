@@ -1,4 +1,4 @@
-import { IsString, IsUUID, MaxLength, IsBoolean, Matches } from 'class-validator';
+import { IsString, IsUUID, MaxLength, IsBoolean, Matches, Length } from 'class-validator';
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
 import { PickableDtoFields } from 'src/utils/pickable-dto-fields';
 import { PickableDiscordUUIDFields } from 'src/utils/pickable-discord-uuid-fields';
@@ -13,7 +13,7 @@ export class CreateRoleDto extends PickType(IntersectionType(PickableDtoFields, 
         default: '0'
     })
     @IsString()
-    @MaxLength(50)
+    @Length(1,6, { message: 'Un serveur peut contenir entre "1" et "500000" membres' })
     @Matches(/^\d+$/, { message: 'memberCount doit être une chaîne numérique' })
     memberCount: string = '0';
 
@@ -22,7 +22,7 @@ export class CreateRoleDto extends PickType(IntersectionType(PickableDtoFields, 
         example: '1'
     })
     @IsString()
-    @MaxLength(50)
+    @Length(1,6, { message: 'Un serveur peut contenir entre "1" et "500000" membres' })
     @Matches(/^\d+$/, { message: 'rolePosition doit être une chaîne numérique' })
     rolePosition: string;
 
@@ -39,7 +39,7 @@ export class CreateRoleDto extends PickType(IntersectionType(PickableDtoFields, 
         pattern: '^#[0-9A-Fa-f]{6}$'
     })
     @IsString()
-    @MaxLength(50)
-    @Matches(/^#[0-9A-Fa-f]{6}$/, { message: 'color doit être un code hexadécimal valide (ex: #FF0000)' })
-    color: string;
+    @Length(7, 7, { message: 'La couleur doit contenir 7 caractères' })
+    @Matches(/^#([0-9a-fA-F]{6})$/, { message: 'La couleur doit être au format hexadécimal' })
+   color: string;
 }

@@ -5,32 +5,42 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Role } from './entities/role.entity';
 import { Guild } from '../guilds/entities/guild.entity';
+import { plainToInstance } from 'class-transformer';
+import { GuildTemplate } from 'src/guilds-templates/entities/guild-template.entity';
 
 describe('RolesController', () => {
   let controller: RolesController;
   let rolesService: RolesService;
 
   const mockGuild: Guild = {
-    uuid: '123e4567-e89b-12d3-a456-426614174001',
+    uuid: '123456789012345678',
     name: 'Test Guild',
-    memberCount: 10,
+    memberCount: "10",
     configuration: {},
     createdAt: new Date(),
-    updatedAt: new Date()
-  };
+    updatedAt: new Date(),
+    members: Promise.resolve([]),
+    promotions: [],
+    courses: [],
+    roles: [],
+    channels: [],
+    categories: [],
+    template: new GuildTemplate(),
+    campuses: []
+  }
 
-  const mockRole: Role = {
-    uuid: '123e4567-e89b-12d3-a456-426614174000',
+  const mockRole = {
+    uuidRole: '123456789012345679',
     name: 'Test Role',
-    member_count: '10',
-    role_position: '1',
+    memberCount: 10,
+    rolePosition: 1,
     hoist: true,
     color: '#FF0000',
     createdAt: new Date(),
     updatedAt: new Date(),
-    uuidGuild: '123e4567-e89b-12d3-a456-426614174001',
+    uuidGuild: '123456789012345678',
     guild: mockGuild
-  };
+  } as Role;
 
   beforeEach(() => {
     rolesService = {
@@ -47,13 +57,13 @@ describe('RolesController', () => {
   describe('create', () => {
     it('devrait créer un nouveau rôle', async () => {
       const createRoleDto: CreateRoleDto = {
-        uuidRole: '123e4567-e89b-12d3-a456-426614174000',
+        uuidRole: '563456789012345678',
         name: 'Test Role',
-        member_count: '10',
-        role_position: '1',
+        memberCount: '10',
+        rolePosition: '1',
         hoist: true,
         color: '#FF0000',
-        uuidGuild: '123e4567-e89b-12d3-a456-426614174001'
+        uuidGuild: '123456789012345678'
       };
 
       vi.mocked(rolesService.create).mockResolvedValue(mockRole);
@@ -81,10 +91,10 @@ describe('RolesController', () => {
     it('devrait retourner un rôle par son uuid', async () => {
       vi.mocked(rolesService.findOne).mockResolvedValue(mockRole);
 
-      const result = await controller.findOne(mockRole.uuid);
+      const result = await controller.findOne(mockRole.uuidRole);
 
       expect(result).toEqual(mockRole);
-      expect(rolesService.findOne).toHaveBeenCalledWith(mockRole.uuid);
+      expect(rolesService.findOne).toHaveBeenCalledWith(mockRole.uuidRole);
     });
   });
 
@@ -94,14 +104,14 @@ describe('RolesController', () => {
         name: 'Updated Role',
         color: '#00FF00'
       };
-      const updatedRole = { ...mockRole, ...updateRoleDto };
+      const updatedRole = plainToInstance(Role, { ...mockRole, ...updateRoleDto });
 
       vi.mocked(rolesService.update).mockResolvedValue(updatedRole);
 
-      const result = await controller.update(mockRole.uuid, updateRoleDto);
+      const result = await controller.update(mockRole.uuidRole, updateRoleDto);
 
       expect(result).toEqual(updatedRole);
-      expect(rolesService.update).toHaveBeenCalledWith(mockRole.uuid, updateRoleDto);
+      expect(rolesService.update).toHaveBeenCalledWith(mockRole.uuidRole, updateRoleDto);
     });
   });
 
@@ -109,10 +119,10 @@ describe('RolesController', () => {
     it('devrait supprimer un rôle', async () => {
       vi.mocked(rolesService.remove).mockResolvedValue(undefined);
 
-      const result = await controller.remove(mockRole.uuid);
+      const result = await controller.remove(mockRole.uuidRole);
 
       expect(result).toBeUndefined();
-      expect(rolesService.remove).toHaveBeenCalledWith(mockRole.uuid);
+      expect(rolesService.remove).toHaveBeenCalledWith(mockRole.uuidRole);
     });
   });
 });

@@ -5,6 +5,11 @@ import { Guild } from '../guilds/entities/guild.entity';
 import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { Role } from '../roles/entities/role.entity';
+import { CreateMemberDto } from './dto/create-member.dto';
+import { GuildTemplate } from 'src/guilds-templates/entities/guild-template.entity';
+import { MemberInformation } from 'src/members-informations/entities/member-information.entity';
+import { DiscordUser } from 'src/discord-users/entities/discord-user.entity';
+import { IdentificationRequest } from 'src/identification-requests/entities/identification-request.entity';
 
 describe('MembersService', () => {
   let service: MembersService;
@@ -14,24 +19,43 @@ describe('MembersService', () => {
   const mockGuild: Guild = {
     uuid: '123e4567-e89b-12d3-a456-426614174001',
     name: 'Test Guild',
-    memberCount: 10,
+    memberCount: '10',
     configuration: {},
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
+    members: Promise.resolve([]),
+    promotions: [],
+    courses: [],
+    roles: [],
+    channels: [],
+    categories: [],
+    template: new GuildTemplate(),
+    campuses: []
   };
 
   const mockMember: Member = {
     uuidMember: '123e4567-e89b-12d3-a456-426614174000',
-    guild_username: 'TestUser',
+    guildUsername: 'TestUser',
     xp: '100.00',
     level: 1,
-    community_role: 'Member',
+    communityRole: 'Member',
     status: 'Active',
     createdAt: new Date(),
     updatedAt: new Date(),
     uuidDiscord: '123e4567-e89b-12d3-a456-426614174002',
-    guild: mockGuild,
-    roles: []
+    guild: Promise.resolve(mockGuild),
+    discordUser: new DiscordUser(),
+    memberInformation: new MemberInformation(),
+    identificationRequest: new IdentificationRequest(),
+    resources: [],
+    xpTransactions: [],
+    roles: [], 
+    comments: [],
+    followedPromotions: [],
+    managedPromotions: [],
+    polls: [],
+    answers: [],
+    uuidGuild: '123456789012345678'
   };
 
   const mockMembersRepository = {
@@ -61,10 +85,10 @@ describe('MembersService', () => {
     it('devrait créer un nouveau membre', async () => {
       const createMemberDto = {
         uuid: '123e4567-e89b-12d3-a456-426614174000',
-        guild_username: 'TestUser',
+        guildUsername: 'TestUser',
         xp: '100.00',
         level: 1,
-        community_role: 'Member',
+        communityRole: 'Member',
         status: 'Active',
         uuidGuild: '123e4567-e89b-12d3-a456-426614174001',
         uuidDiscord: '123e4567-e89b-12d3-a456-426614174002'
@@ -73,7 +97,7 @@ describe('MembersService', () => {
       mockMembersRepository.create.mockReturnValue(mockMember);
       mockMembersRepository.save.mockResolvedValue(mockMember);
 
-      const result = await service.create(createMemberDto);
+      const result = await service.create(createMemberDto as CreateMemberDto);
 
       expect(result).toEqual(mockMember);
       expect(mockMembersRepository.create).toHaveBeenCalledWith(createMemberDto);

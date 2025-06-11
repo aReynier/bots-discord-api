@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, Length } from 'class-validator';
+import { IsString, Length, Matches } from 'class-validator';
 
 export class PickableDtoFields {
 
@@ -10,6 +10,10 @@ export class PickableDtoFields {
     })
     @IsString()
     @Length(2, 50)
+    @Matches(
+        /^[a-zA-ZÀ-ÿ0-9\s\-_]+$/, 
+        { message: 'Le nom ne peut contenir que des lettres (avec accents), chiffres, espaces, tirets et underscores' }
+      )
     name: string;
 
 }

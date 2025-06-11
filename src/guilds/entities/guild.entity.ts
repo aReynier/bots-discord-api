@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Course } from '../../courses/entities/course.entity';
 import { Member } from '../../members/entities/member.entity';
@@ -8,6 +8,7 @@ import { GuildTemplate } from '../../guilds-templates/entities/guild-template.en
 import { Channel } from '../../channels/entities/channel.entity';
 import { Category } from '../../categories/entities/category.entity';
 import { Campus } from '../../campuses/entities/campus.entity';
+import { IsOptional, IsString, IsArray, Length, Matches, IsObject, IsDate } from 'class-validator';
 
 @Entity('guilds')
 export class Guild {
@@ -16,13 +17,19 @@ export class Guild {
     example: '123456789012345678',
   })
   @PrimaryColumn({ type: 'varchar', length: 19, name: 'uuid_guild' })
+  @IsString()
+  @Length(17, 19, { message: 'Le snowflake doit contenir entre 17 et 19 caractères' })
+  @Matches(/^\d+$/, { message: 'Le snowflake doit contenir uniquement des chiffres' })
   uuid: string;
 
   @ApiProperty({
     description: 'Nom du serveur',
     example: 'Simplon Server',
   })
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar', length: 100 })
+  @IsString()
+  @Length(2, 100, { message: 'Le nom doit contenir entre 2 et 100 caractères' })
+  @Matches(/^[a-zA-ZÀ-ÿ0-9\s\-_]+$/, { message: 'Le nom ne peut contenir que des lettres (avec accents), chiffres, espaces, tirets et underscores' })
   name: string;
 
   @ApiProperty({
@@ -30,6 +37,8 @@ export class Guild {
     example: '100',
   })
   @Column({ type: 'varchar', length: 50, name: 'member_count' })
+  @IsString()
+  @Length(1,6, { message: 'Un serveur peut contenir entre "1" et "500000" membres' })
   memberCount: string;
 
   @ApiProperty({
@@ -37,18 +46,22 @@ export class Guild {
     example: { welcomeChannel: '123456789012345678', prefix: '!' },
   })
   @Column({ type: 'jsonb', nullable: true })
+  @IsObject()
   configuration: Record<string, any>;
 
   @ApiProperty({
     description: 'Date de création',
   })
   @CreateDateColumn({ name: 'created_at' })
+  @IsDate()
   createdAt: Date;
 
   @ApiProperty({
     description: 'Date de dernière mise à jour',
   })
   @UpdateDateColumn({ name: 'updated_at' })
+  @IsDate()
+  @IsOptional()
   updatedAt: Date;
 
   @ApiProperty({
@@ -63,6 +76,7 @@ export class Guild {
     type: () => [Promotion]
   })
   @OneToMany(() => Promotion, (promotion) => promotion.guild)
+  @IsArray()
   promotions: Promotion[];
 
   @ApiProperty({
@@ -70,6 +84,7 @@ export class Guild {
     type: () => [Course]
   })
   @OneToMany(() => Course, course => course.guild)
+  @IsArray()
   courses: Course[];
 
   @ApiProperty({
@@ -77,6 +92,7 @@ export class Guild {
     type: () => [Role]
   })
   @OneToMany(() => Role, role => role.guild)
+  @IsArray()
   roles: Role[];
 
   @ApiProperty({
@@ -91,6 +107,7 @@ export class Guild {
     type: () => [Channel]
   })
   @OneToMany(() => Channel, channel => channel.guild)
+  @IsArray()
   channels: Channel[];
 
   @ApiProperty({
@@ -98,6 +115,7 @@ export class Guild {
     type: () => [Category]
   })
   @OneToMany(() => Category, category => category.guild)
+  @IsArray()
   categories: Category[];
 
   @ApiProperty({
@@ -105,5 +123,6 @@ export class Guild {
     type: () => [Campus]
   })
   @OneToMany(() => Campus, campus => campus.guild)
+  @IsArray()
   campuses: Campus[];
 }

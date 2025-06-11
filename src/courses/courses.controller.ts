@@ -71,7 +71,7 @@ export class CoursesController {
   @ApiParam({
     name: 'uuid_course',
     description: 'UUID de la formation',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    example: '726798891974243359',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -94,7 +94,7 @@ export class CoursesController {
   @ApiParam({
     name: 'uuid_course',
     description: 'UUID de la formation',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    example: '726798891974243359',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -128,7 +128,7 @@ export class CoursesController {
   @ApiParam({
     name: 'uuid_course',
     description: 'UUID de la formation',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    example: '726798891974243359',
   })
   @ApiResponse({
     status: HttpStatus.NO_CONTENT,

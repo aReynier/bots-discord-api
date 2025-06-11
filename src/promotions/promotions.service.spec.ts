@@ -70,9 +70,11 @@ describe('PromotionsService', () => {
         startDate: new Date(),
         endDate: new Date(),
         status: 'active',
-        uuidCourse: '123e4567-e89b-12d3-a456-426614174000',
+        uuidCourse: '123456789012345678',
         uuidGuild: '123456789012345678',
         uuidRole: '234567890123456789',
+        uuidCategory: '123456789012345678',
+        uuidCampus: '123456789012345678'
       };
 
       const newRole = {

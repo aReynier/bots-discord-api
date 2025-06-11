@@ -1,8 +1,7 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   Column,
-  OneToOne,
   JoinColumn,
   OneToMany,
   ManyToOne,
@@ -15,16 +14,20 @@ import { Role } from '../../roles/entities/role.entity';
 import { Promotion } from '../../promotions/entities/promotion.entity';
 import { Channel } from '../../channels/entities/channel.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString, Length, Matches, IsBoolean, IsDate, IsOptional, IsArray } from 'class-validator';
 
 @Entity('courses')
 export class Course {
 
   @ApiProperty({
-    description: 'UUID unique de la formation',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    description: 'ID unique de la formation',
+    example: '123456789012345678',
   })
-  @PrimaryGeneratedColumn('uuid', { name: 'uuid_course' })
-    uuid: string;
+  @PrimaryColumn({ type: 'varchar', length: 19, name: 'uuid_course' })
+  @IsString()
+  @Length(17, 19, { message: 'Le snowflake doit contenir entre 17 et 19 caractères' })
+  @Matches(/^\d+$/, { message: 'Le snowflake doit contenir uniquement des chiffres' })
+  uuid: string;
 
   @ApiProperty({
     description: 'Nom de la formation',
@@ -32,13 +35,20 @@ export class Course {
     maxLength: 50,
   })
   @Column({ type: 'varchar', length: 50 })
+  @IsString()
+  @Length(2, 50, { message: 'Le nom doit contenir entre 2 et 50 caractères' })
+  @Matches(
+    /^[a-zA-ZÀ-ÿ0-9\s\-_]+$/, 
+    { message: 'Le nom ne peut contenir que des lettres (avec accents), chiffres, espaces, tirets et underscores' }
+  )
   name: string;
 
   @ApiProperty({
     description: 'Indique si la formation est certifiée',
     example: true,
   })
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', name: 'is_certified' })
+  @IsBoolean()
   isCertified: boolean;
 
   @ApiProperty({
@@ -50,6 +60,7 @@ export class Course {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
+  @IsDate()
   createdAt: Date;
 
   @ApiProperty({
@@ -61,6 +72,8 @@ export class Course {
     type: 'timestamp',
     nullable: true,
   })
+  @IsDate()
+  @IsOptional()
   updatedAt: Date;
 
   @ApiProperty({
@@ -76,7 +89,10 @@ export class Course {
     example: '123456789012345678',
   })
   @Column({ name: 'uuid_guild', type: 'varchar', length: 19})
-    uuidGuild: string;
+  @IsString()
+  @Length(17, 19, { message: 'Le snowflake doit contenir entre 17 et 19 caractères' })
+  @Matches(/^\d+$/, { message: 'Le snowflake doit contenir uniquement des chiffres' })
+  uuidGuild: string;
   
   @ApiProperty({
     description: 'Catégorie associée à la formation',
@@ -98,6 +114,9 @@ export class Course {
     type: 'varchar',
     length: 19
   })
+  @IsString()
+  @Length(17, 19, { message: 'Le snowflake doit contenir entre 17 et 19 caractères' })
+  @Matches(/^\d+$/, { message: 'Le snowflake doit contenir uniquement des chiffres' })
   uuidCategory: string;
   
   @ApiProperty({
@@ -119,6 +138,7 @@ export class Course {
         referencedColumnName: 'uuidRole'
     }]
   })
+  @IsArray()
   roles: Role[];
 
   @ApiProperty({
@@ -128,6 +148,7 @@ export class Course {
     nullable: true,
   })
   @OneToMany(() => Promotion, (promotion) => promotion.course)
+  @IsArray()
   promotions: Promotion[];
 
   @ApiProperty({
@@ -137,5 +158,6 @@ export class Course {
     nullable: true,
   })
   @OneToMany(() => Channel, (channel) => channel.course)
+  @IsArray()
   channels: Channel[];
 }

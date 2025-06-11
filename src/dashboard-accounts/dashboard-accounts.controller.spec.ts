@@ -45,7 +45,7 @@ describe('DashboardAccountController', () => {
   describe('create', () => {
     it('should create a dashboard account', async () => {
       const dto: CreateDashboardAccountDto = {
-        uuid_discord: '123456789012345678',
+        uuidDiscord: '123456789012345678',
         email: 'test@example.com',
         password: 'password123' 
       };
