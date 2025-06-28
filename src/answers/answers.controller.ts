@@ -1,11 +1,12 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, NotFoundException, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { AnswersService } from './answers.service';
 import { CreateAnswerQuestionDto } from './dto/create-answer-question.dto';  
 import { UpdateAnswerDto } from './dto/update-answer.dto';
 import { Answer } from './entities/answer.entity';
 
 @ApiTags('answers')
+@ApiBearerAuth('JWT-auth')
 @Controller('answers')
 export class AnswersController {
   constructor(private readonly answersService: AnswersService) {}

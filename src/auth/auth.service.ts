@@ -269,7 +269,11 @@ export class AuthService {
       type: 'bot', // Identifier que c'est un token de bot
     };
 
+    console.log('Payload:', payload);
+
     // Token avec une durée de vie plus longue pour les bots (24h)
-    return this.jwtService.sign(payload, { expiresIn: '24h' });
+    const token = this.jwtService.sign(payload, { expiresIn: '24h' });
+    
+    return token;
   }
 } 
