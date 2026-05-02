@@ -58,7 +58,7 @@ Cette API est conçue pour gérer des bots Discord en utilisant le framework Nes
   - [Members Informations Endpoints](#members-informations-endpoints)
   - [Moderator Actions Endpoints](#moderator-actions-endpoints)
   - [Tags](#tags)
-
+  - [Backups](#backups)
 
 # Normes pour les commits et les pull requests ✍️
 
@@ -983,4 +983,35 @@ Note: Les transactions XP ne peuvent pas être modifiées ou supprimées une foi
 - **DELETE** `/tags/:id`
 - **Exemple** : `/tags/550e8400-e29b-41d4-a716-446655440000`
 
+## Backups
+### en dev
+Possibilité de créer des backups au moyen de la commande suivante:
+```
+ENV="development" bash backup.sh
+```
 
+Possibilité de récupérer une sauvegarde au moyen de celle ci (rpréciser le ficheir voulu):
+```
+ENV="development" bash ./restore.sh ./backups/backup_YYYY-MM-DD_HH:MM:SS.sql
+```
+
+### en prod
+```
+ENV="production" bash backup.sh
+```
+
+Possibilité de récupérer une sauvegarde au moyen de celle ci (préciser le fichier voulu):
+```
+ENV="production" bash ./restore.sh ./backups/backup_YYYY-MM-DD_HH:MM:SS.sql
+```
+
+### Cron
+Possibilité de préparer une tâche Cron lors d'un déploiement:
+```
+crontab -e  
+```
+
+Le script prendra la forme suivante:
+```
+0 3 * * * bash chemin/backup.sh >> chemin/backup.log
+```

@@ -1,3 +1,6 @@
+# Backups
+backups/
+
 # compiled output
 /dist
 /node_modules
