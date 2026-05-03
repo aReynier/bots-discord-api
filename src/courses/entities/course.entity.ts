@@ -2,7 +2,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
   JoinColumn,
   OneToMany,
   ManyToOne,
@@ -18,13 +17,12 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('courses')
 export class Course {
-
   @ApiProperty({
     description: 'UUID unique de la formation',
     example: '123e4567-e89b-12d3-a456-426614174000',
   })
   @PrimaryGeneratedColumn('uuid', { name: 'uuid_course' })
-    uuid: string;
+  idCourse: string;
 
   @ApiProperty({
     description: 'Nom de la formation',
@@ -32,7 +30,7 @@ export class Course {
     maxLength: 50,
   })
   @Column({ type: 'varchar', length: 50 })
-  name: string;
+  nameCourse: string;
 
   @ApiProperty({
     description: 'Indique si la formation est certifiée',
@@ -50,7 +48,7 @@ export class Course {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  createdAt: Date;
+  createdAtCourse: Date;
 
   @ApiProperty({
     description: 'Date de dernière mise à jour',
@@ -61,7 +59,7 @@ export class Course {
     type: 'timestamp',
     nullable: true,
   })
-  updatedAt: Date;
+  updatedAtCourse: Date;
 
   @ApiProperty({
     description: 'Guilde associée aux formations',
@@ -75,9 +73,9 @@ export class Course {
     description: 'UUID unique de la guilde',
     example: '123456789012345678',
   })
-  @Column({ name: 'uuid_guild', type: 'varchar', length: 19})
-    uuidGuild: string;
-  
+  @Column({ name: 'uuid_guild', type: 'varchar', length: 19 })
+  uuidGuild: string;
+
   @ApiProperty({
     description: 'Catégorie associée à la formation',
     example: {
@@ -91,33 +89,36 @@ export class Course {
 
   @ApiProperty({
     description: 'UUID unique de la catégorie',
-    example: '123456789012345678'
+    example: '123456789012345678',
   })
   @Column({
     name: 'uuid_category',
     type: 'varchar',
-    length: 19
+    length: 19,
   })
   uuidCategory: string;
-  
+
   @ApiProperty({
     description: 'Rôles associés aux formations',
     type: () => [Role],
     isArray: true,
-    nullable: true
+    nullable: true,
   })
-  
-  @ManyToMany(() => Role, role => role.courses, { nullable: true })
+  @ManyToMany(() => Role, (role) => role.courses, { nullable: true })
   @JoinTable({
     name: 'courses_roles',
-    joinColumns: [{
+    joinColumns: [
+      {
         name: 'uuid_course',
-        referencedColumnName: 'uuid'
-    }],
-    inverseJoinColumns: [{
+        referencedColumnName: 'idCourse',
+      },
+    ],
+    inverseJoinColumns: [
+      {
         name: 'uuid_role',
-        referencedColumnName: 'uuidRole'
-    }]
+        referencedColumnName: 'uuidRole',
+      },
+    ],
   })
   roles: Role[];
 
