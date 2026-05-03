@@ -3,7 +3,11 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { CoursesService } from './courses.service';
 import { Course } from './entities/course.entity';
 import { Repository } from 'typeorm';
-import { ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  ConflictException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { Role } from '../roles/entities/role.entity';
@@ -13,11 +17,11 @@ describe('CoursesService', () => {
   let repository: Repository<Course>;
 
   const mockCourse = {
-    uuid: '123e4567-e89b-12d3-a456-426614174000',
-    name: 'Développeur web',
+    idCourse: '123e4567-e89b-12d3-a456-426614174000',
+    nameCourse: 'Développeur web',
     isCertified: true,
-    createdAt: new Date(),
-    updatedAt: null,
+    createdAtCourse: new Date(),
+    updatedAtCourse: null,
     uuidCategory: '123456789012345678',
     uuidGuild: '123456789012345678',
   };
@@ -72,89 +76,97 @@ describe('CoursesService', () => {
     repository = module.get<Repository<Course>>(getRepositoryToken(Course));
   });
 
-  describe('create', () => {
+  describe('createCourse', () => {
     it('should create a course without role', async () => {
       const dto = {
-          name: 'Développeur web',
-          isCertified: true,
-          uuidCategory: '123456789012345678',
-          uuidGuild: '123456789012345678',
-          uuidRole: ''
-      };  
+        nameCourse: 'Développeur web',
+        isCertified: true,
+        uuidCategory: '123456789012345678',
+        uuidGuild: '123456789012345678',
+        uuidRole: '',
+      };
 
-      mockRepository.findOne.mockResolvedValueOnce(null).mockResolvedValueOnce(mockCourse);
+      mockRepository.findOne
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(mockCourse);
       mockRepository.create.mockReturnValue(mockCourse);
       mockRepository.save.mockResolvedValue(mockCourse);
 
-      const result = await service.create(dto);
+      const result = await service.createCourse(dto);
       expect(result).toEqual(mockCourse);
-  });
+    });
 
-  it('should create a course with role', async () => {
+    it('should create a course with role', async () => {
       const dto = {
-          name: 'Développeur web',
-          isCertified: true,
-          uuidCategory: '123456789012345678',
-          uuidGuild: '123456789012345678',
-          uuidRole: '123456789012345678'
-      } as CreateCourseDto;  // Utiliser type assertion
+        nameCourse: 'Développeur web',
+        isCertified: true,
+        uuidCategory: '123456789012345678',
+        uuidGuild: '123456789012345678',
+        uuidRole: '123456789012345678',
+      } as CreateCourseDto; // Utiliser type assertion
 
-      mockRepository.findOne.mockResolvedValueOnce(null).mockResolvedValueOnce(mockCourse);
+      mockRepository.findOne
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(mockCourse);
       mockRepository.create.mockReturnValue(mockCourse);
       mockRepository.save.mockResolvedValue(mockCourse);
       mockRoleRepository.findOne.mockResolvedValue(mockRole);
 
-      const result = await service.create(dto);
+      const result = await service.createCourse(dto);
       expect(result).toEqual(mockCourse);
     });
 
     it('should throw BadRequestException if course name exists', async () => {
       const dto = {
-        uuid: '123e4567-e89b-12d3-a456-426614174000',
-        name: 'Développeur web',
+        idCourse: '123e4567-e89b-12d3-a456-426614174000',
+        nameCourse: 'Développeur web',
         uuidCategory: '123456789012345678',
         uuidGuild: '123456789012345678',
         isCertified: true,
-        uuidRole: '123456789012345678'
+        uuidRole: '123456789012345678',
       };
 
       mockRepository.findOne.mockResolvedValue(mockCourse);
 
-      await expect(service.create(dto)).rejects.toThrow(BadRequestException);
-      await expect(service.create(dto)).rejects.toThrow('Erreur lors de la création du cours: Course with name Développeur web already exists');
+      await expect(service.createCourse(dto)).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(service.createCourse(dto)).rejects.toThrow(
+        'Erreur lors de la création du cours: Course with name Développeur web already exists',
+      );
     });
   });
 
-  describe('findAll', () => {
+  describe('getAllCourses', () => {
     it('should return an array of courses', async () => {
-      const courses = [mockCourse, { ...mockCourse, uuid: '456' }];
+      const courses = [mockCourse, { ...mockCourse, idCourse: '456' }];
       mockRepository.find.mockResolvedValue(courses);
 
-      const result = await service.findAll();
+      const result = await service.getAllCourses();
 
       expect(result).toEqual(courses);
       expect(mockRepository.find).toHaveBeenCalledWith({
-        relations: ['category', 'guild', 'roles', 'promotions', 'channels']
+        relations: ['category', 'guild', 'roles', 'promotions', 'channels'],
       });
     });
 
     it('should return empty array when no courses exist', async () => {
       mockRepository.find.mockResolvedValue([]);
 
-      const result = await service.findAll();
+      const result = await service.getAllCourses();
 
       expect(result).toEqual([]);
       expect(mockRepository.find).toHaveBeenCalledWith({
-        relations: ['category', 'guild', 'roles', 'promotions', 'channels']
+        relations: ['category', 'guild', 'roles', 'promotions', 'channels'],
       });
     });
   });
 
-  describe('getByUUID', () => {
+  describe('getCourseByID', () => {
     it('should return a course', async () => {
       mockRepository.findOne.mockResolvedValue(mockCourse);
 
-      const result = await service.getByUUID(mockCourse.uuid);
+      const result = await service.getCourseByID(mockCourse.idCourse);
 
       expect(result).toEqual(mockCourse);
     });
@@ -162,108 +174,113 @@ describe('CoursesService', () => {
     it('should throw NotFoundException when course not found', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.getByUUID('non-existent')).rejects.toThrow(NotFoundException);
+      await expect(service.getCourseByID('non-existent')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
-  describe('updateByUUID', () => {
+  describe('updateCourseByID', () => {
     it('should update a course', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
+      const idCourse = '123e4567-e89b-12d3-a456-426614174000';
       const updateDto = {
-        name: 'updated-course',
-        isCertified: false
+        nameCourse: 'updated-course',
+        isCertified: false,
       };
       const updatedCourse = { ...mockCourse, ...updateDto };
 
       mockRepository.findOne.mockResolvedValue({
         ...mockCourse,
-        relations: ['category', 'guild', 'roles', 'promotions', 'channels']
+        relations: ['category', 'guild', 'roles', 'promotions', 'channels'],
       });
       mockRepository.save.mockResolvedValue(updatedCourse);
 
-      const result = await service.updateByUUID(uuid, updateDto);
+      const result = await service.updateCourseByID(idCourse, updateDto);
 
       expect(result).toEqual(updatedCourse);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { uuid: uuid },
-        relations: ['category', 'guild', 'roles', 'promotions', 'channels']
+        where: { idCourse: idCourse },
+        relations: ['category', 'guild', 'roles', 'promotions', 'channels'],
       });
       expect(mockRepository.save).toHaveBeenCalledWith({
         ...mockCourse,
         ...updateDto,
-        relations: ['category', 'guild', 'roles', 'promotions', 'channels']
+        relations: ['category', 'guild', 'roles', 'promotions', 'channels'],
       });
     });
 
     it('should throw NotFoundException when updating non-existent course', async () => {
-      const uuid = 'non-existent';
-      const updateDto = { name: 'updated-course' };
+      const idCourse = 'non-existent';
+      const updateDto = { nameCourse: 'updated-course' };
 
       mockRepository.findOne.mockReset();
       mockRepository.save.mockReset();
 
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.updateByUUID(uuid, updateDto))
-        .rejects
-        .toThrow(NotFoundException);
-      
+      await expect(
+        service.updateCourseByID(idCourse, updateDto),
+      ).rejects.toThrow(NotFoundException);
+
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { uuid: uuid },
-        relations: ['category', 'guild', 'roles', 'promotions', 'channels']
+        where: { idCourse: idCourse },
+        relations: ['category', 'guild', 'roles', 'promotions', 'channels'],
       });
 
       expect(mockRepository.save).not.toHaveBeenCalled();
     });
 
     it('should throw ConflictException when updating to existing course name', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
-      const updateDto = { name: 'existing-course' };
+      const idCourse = '123e4567-e89b-12d3-a456-426614174000';
+      const updateDto = { nameCourse: 'existing-course' };
 
       mockRepository.findOne.mockReset();
 
       mockRepository.findOne
-      .mockResolvedValueOnce({
+        .mockResolvedValueOnce({
           ...mockCourse,
           category: {},
           guild: {},
           roles: [],
           promotions: [],
-          channels: []
-      })
-      .mockResolvedValueOnce({ 
-        ...mockCourse, 
-        uuid: 'different-uuid',
-        name: 'existing-course' 
-      }); 
+          channels: [],
+        })
+        .mockResolvedValueOnce({
+          ...mockCourse,
+          idCourse: 'different-uuid',
+          nameCourse: 'existing-course',
+        });
 
-      await expect(service.updateByUUID(uuid, updateDto))
-        .rejects
-        .toThrow(ConflictException);
-        
-      expect(mockRepository.findOne).toHaveBeenCalledTimes(2);    
+      await expect(
+        service.updateCourseByID(idCourse, updateDto),
+      ).rejects.toThrow(ConflictException);
+
+      expect(mockRepository.findOne).toHaveBeenCalledTimes(2);
       expect(mockRepository.save).not.toHaveBeenCalled();
     });
 
     it('should load all relations when updating', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
-      const updateDto = { name: 'updated-course' };
-      
+      const idCourse = '123e4567-e89b-12d3-a456-426614174000';
+      const updateDto = { nameCourse: 'updated-course' };
+
       const courseWithRelations = {
-          ...mockCourse,
-          category: { id: 1 },
-          guild: { id: 1 },
-          roles: [{ id: 1 }],
-          promotions: [{ id: 1 }],
-          channels: [{ id: 1 }]
+        ...mockCourse,
+        category: { id: 1 },
+        guild: { id: 1 },
+        roles: [{ id: 1 }],
+        promotions: [{ id: 1 }],
+        channels: [{ id: 1 }],
       };
-  
+
       mockRepository.findOne.mockResolvedValue(courseWithRelations);
-      mockRepository.save.mockResolvedValue({ ...courseWithRelations, ...updateDto });
-  
-      const result = await service.updateByUUID(uuid, updateDto);
-  
+      mockRepository.save.mockResolvedValue({
+        ...courseWithRelations,
+        ...updateDto,
+      });
+
+      const result = await service.updateCourseByID(idCourse, updateDto);
+
       expect(result.category).toBeDefined();
       expect(result.guild).toBeDefined();
       expect(result.roles).toBeDefined();
@@ -272,59 +289,63 @@ describe('CoursesService', () => {
     });
   });
 
-  describe('deleteByUUID', () => {
+  describe('deleteCourseByID', () => {
     it('should delete a course', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
-      
+      const idCourse = '123e4567-e89b-12d3-a456-426614174000';
+
       mockRepository.findOne.mockResolvedValue(mockCourse);
       mockRepository.delete.mockResolvedValue({ affected: 1 });
 
-      await service.deleteByUUID(uuid);
+      await service.deleteCourseByID(idCourse);
 
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { uuid: uuid }
+        where: { idCourse: idCourse },
       });
-      expect(mockRepository.delete).toHaveBeenCalledWith({ uuid: uuid });
+      expect(mockRepository.delete).toHaveBeenCalledWith({
+        idCourse: idCourse,
+      });
     });
 
     it('should throw NotFoundException when deleting non-existent course', async () => {
-      const uuid = 'non-existent';
+      const idCourse = 'non-existent';
 
       mockRepository.findOne.mockReset();
       mockRepository.delete.mockReset();
 
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.deleteByUUID(uuid))
-        .rejects
-        .toThrow(NotFoundException);
+      await expect(service.deleteCourseByID(idCourse)).rejects.toThrow(
+        NotFoundException,
+      );
 
       expect(mockRepository.findOne).toHaveBeenCalledTimes(1);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { uuid: uuid }
+        where: { idCourse: idCourse },
       });
-      
+
       expect(mockRepository.delete).not.toHaveBeenCalled();
     });
 
     it('should throw an error if delete operation fails', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
+      const idCourse = '123e4567-e89b-12d3-a456-426614174000';
 
       mockRepository.findOne.mockReset();
       mockRepository.delete.mockReset();
-      
+
       mockRepository.findOne.mockResolvedValue(mockCourse);
       mockRepository.delete.mockResolvedValue({ affected: 0 });
 
-      await expect(service.deleteByUUID(uuid))
-        .rejects
-        .toThrow('Failed to delete course');
+      await expect(service.deleteCourseByID(idCourse)).rejects.toThrow(
+        'Failed to delete course',
+      );
 
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { uuid: uuid }
+        where: { idCourse: idCourse },
       });
 
-      expect(mockRepository.delete).toHaveBeenCalledWith({ uuid: uuid });
+      expect(mockRepository.delete).toHaveBeenCalledWith({
+        idCourse: idCourse,
+      });
     });
   });
 });
