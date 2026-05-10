@@ -632,11 +632,11 @@ Example: `/comments/123e4567-e89b-12d3-a456-426614174000`
 - **GET** `/courses`
 
 #### Get One Course
-- **GET** `/courses/:uuid`
+- **GET** `/courses/:id`
 Example: `/courses/123e4567-e89b-12d3-a456-426614174000`
 
 #### Update a Course
-- **PUT** `/courses/:uuid`
+- **PUT** `/courses/:id`
 ```json
 {
   "name": "updated-course",
@@ -645,7 +645,7 @@ Example: `/courses/123e4567-e89b-12d3-a456-426614174000`
 ```
 
 #### Delete a Course
-- **DELETE** `/courses/:uuid`
+- **DELETE** `/courses/:id`
 Example: `/courses/123e4567-e89b-12d3-a456-426614174000`
 
 ### Dashboard Accounts Endpoints

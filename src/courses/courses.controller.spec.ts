@@ -1,30 +1,33 @@
 import { Test } from '@nestjs/testing';
 import { CoursesController } from './courses.controller';
-import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {
+  ICoursesService,
+  ICoursesServiceToken,
+} from './interfaces/course.interface';
 
 describe('CoursesController', () => {
   let controller: CoursesController;
-  let service: CoursesService;
+  let service: ICoursesService;
 
   const mockCourse = {
-    uuid: '123e4567-e89b-12d3-a456-426614174000',
-    name: 'Développeur web',
+    idCourse: '123e4567-e89b-12d3-a456-426614174000',
+    nameCourse: 'Développeur web',
     isCertified: true,
-    uuidCategory: '123456789012345678',
-    uuidGuild: '123456789012345678',
-    createdAt: new Date(),
-    updatedAt: null,
+    idCategory: '123456789012345678',
+    idGuild: '123456789012345678',
+    createdAtCourse: new Date(),
+    updatedAtCourse: null,
   };
 
   const mockService = {
-    create: vi.fn(),
-    findAll: vi.fn(),
-    getByUUID: vi.fn(),
-    updateByUUID: vi.fn(),
-    deleteByUUID: vi.fn(),
+    createCourse: vi.fn(),
+    getAllCourses: vi.fn(),
+    getCourseByID: vi.fn(),
+    updateCourseByID: vi.fn(),
+    deleteCourseByID: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -32,90 +35,93 @@ describe('CoursesController', () => {
       controllers: [CoursesController],
       providers: [
         {
-          provide: CoursesService,
+          provide: ICoursesServiceToken,
           useValue: mockService,
         },
       ],
     }).compile();
 
     controller = module.get<CoursesController>(CoursesController);
-    service = module.get<CoursesService>(CoursesService);
+    service = module.get<ICoursesService>(ICoursesServiceToken);
   });
 
-  describe('create', () => {
+  describe('createCourse', () => {
     it('should create a course', async () => {
       const dto: CreateCourseDto = {
-        name: 'Développeur web',
+        nameCourse: 'Développeur web',
         isCertified: true,
         uuidCategory: '123456789012345678',
         uuidGuild: '123456789012345678',
-        uuidRole: ''
+        uuidRole: '',
       };
 
-      mockService.create.mockResolvedValue({
-        uuid: '123e4567-e89b-12d3-a456-426614174000',
+      mockService.createCourse.mockResolvedValue({
+        idCourse: '123e4567-e89b-12d3-a456-426614174000',
         ...dto,
-        createdAt: expect.any(Date),
-        updatedAt: null
-    });
+        createdAtCourse: expect.any(Date),
+        updatedAtCourse: null,
+      });
 
-      const result = await controller.create(dto);
+      const result = await controller.createCourse(dto);
 
-      expect(result).toHaveProperty('uuid');
-      expect(result.name).toBe(dto.name);
+      expect(result).toHaveProperty('idCourse');
+      expect(result.nameCourse).toBe(dto.nameCourse);
       expect(result.isCertified).toBe(dto.isCertified);
-      expect(mockService.create).toHaveBeenCalledWith(dto);
+      expect(mockService.createCourse).toHaveBeenCalledWith(dto);
     });
   });
 
-  describe('findAll', () => {
+  describe('getAllCourses', () => {
     it('should return an array of courses', async () => {
-      const courses = [mockCourse, { ...mockCourse, uuid: '456' }];
-      mockService.findAll.mockResolvedValue(courses);
+      const courses = [mockCourse, { ...mockCourse, idCourse: '456' }];
+      mockService.getAllCourses.mockResolvedValue(courses);
 
-      const result = await controller.findAll();
+      const result = await controller.getAllCourses();
 
       expect(result).toEqual(courses);
-      expect(mockService.findAll).toHaveBeenCalled();
+      expect(mockService.getAllCourses).toHaveBeenCalled();
     });
   });
 
-  describe('getByUUID', () => {
+  describe('getCourseByID', () => {
     it('should return a course', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
-      mockService.getByUUID.mockResolvedValue(mockCourse);
+      const idCourse = '123e4567-e89b-12d3-a456-426614174000';
+      mockService.getCourseByID.mockResolvedValue(mockCourse);
 
-      const result = await controller.getByUUID(uuid);
+      const result = await controller.getCourseByID(idCourse);
 
       expect(result).toEqual(mockCourse);
-      expect(mockService.getByUUID).toHaveBeenCalledWith(uuid);
+      expect(mockService.getCourseByID).toHaveBeenCalledWith(idCourse);
     });
   });
 
-  describe('updateByUUID', () => {
+  describe('updateCourseByID', () => {
     it('should update a course', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
+      const idCourse = '123e4567-e89b-12d3-a456-426614174000';
       const updateDto: UpdateCourseDto = {
-        name: 'updated-course'
+        nameCourse: 'updated-course',
       };
       const updatedCourse = { ...mockCourse, ...updateDto };
-      mockService.updateByUUID.mockResolvedValue(updatedCourse);
+      mockService.updateCourseByID.mockResolvedValue(updatedCourse);
 
-      const result = await controller.updateByUUID(uuid, updateDto);
+      const result = await controller.updateCourseByID(idCourse, updateDto);
 
       expect(result).toEqual(updatedCourse);
-      expect(mockService.updateByUUID).toHaveBeenCalledWith(uuid, updateDto);
+      expect(mockService.updateCourseByID).toHaveBeenCalledWith(
+        idCourse,
+        updateDto,
+      );
     });
   });
 
-  describe('deleteByUUID', () => {
+  describe('deleteByID', () => {
     it('should delete a course', async () => {
-      const uuid = '123e4567-e89b-12d3-a456-426614174000';
-      mockService.deleteByUUID.mockResolvedValue(undefined);
+      const idCourse = '123e4567-e89b-12d3-a456-426614174000';
+      mockService.deleteCourseByID.mockResolvedValue(undefined);
 
-      await controller.deleteByUUID(uuid);
+      await controller.deleteCourseByID(idCourse);
 
-      expect(mockService.deleteByUUID).toHaveBeenCalledWith(uuid);
+      expect(mockService.deleteCourseByID).toHaveBeenCalledWith(idCourse);
     });
   });
 });
